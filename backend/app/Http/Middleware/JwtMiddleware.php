@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+use Exception;
+
+class JwtMiddleware
+{
+    public function handle($request, Closure $next)
+    {
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => 'Token inválido ou ausente'
+            ], 401);
+        }
+
+        return $next($request);
+    }
+}
